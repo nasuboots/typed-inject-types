@@ -1,0 +1,23 @@
+diff --git a/node_modules/typed-inject/dist/src/api/Injector.d.ts b/node_modules/typed-inject/dist/src/api/Injector.d.ts
+index 9375bb6..49fed38 100644
+--- a/node_modules/typed-inject/dist/src/api/Injector.d.ts
++++ b/node_modules/typed-inject/dist/src/api/Injector.d.ts
+@@ -2,13 +2,14 @@ import { InjectableClass, InjectableFunction } from './Injectable';
+ import { InjectionToken } from './InjectionToken';
+ import { Scope } from './Scope';
+ import { TChildContext } from './TChildContext';
++
+ export interface Injector<TContext = {}> {
+     injectClass<R, Tokens extends readonly InjectionToken<TContext>[]>(Class: InjectableClass<TContext, R, Tokens>): R;
+     injectFunction<R, Tokens extends readonly InjectionToken<TContext>[]>(Class: InjectableFunction<TContext, R, Tokens>): R;
+     resolve<Token extends keyof TContext>(token: Token): TContext[Token];
+-    provideValue<Token extends string, R>(token: Token, value: R): Injector<TChildContext<TContext, R, Token>>;
+-    provideClass<Token extends string, R, Tokens extends readonly InjectionToken<TContext>[]>(token: Token, Class: InjectableClass<TContext, R, Tokens>, scope?: Scope): Injector<TChildContext<TContext, R, Token>>;
+-    provideFactory<Token extends string, R, Tokens extends readonly InjectionToken<TContext>[]>(token: Token, factory: InjectableFunction<TContext, R, Tokens>, scope?: Scope): Injector<TChildContext<TContext, R, Token>>;
++    provideValue<Token extends string, R>(token: Token extends keyof TContext ? never : Token, value: R): Injector<{ [K in keyof TContext]: TContext[K]} & { [T in Token]: R }>;
++    provideClass<Token extends string, R, Tokens extends readonly InjectionToken<TContext>[]>(token: Token extends keyof TContext ? never : Token, Class: InjectableClass<TContext, R, Tokens>, scope?: Scope): Injector<{ [K in keyof TContext]: TContext[K]} & { [T in Token]: R }>;
++    provideFactory<Token extends string, R, Tokens extends readonly InjectionToken<TContext>[]>(token: Token extends keyof TContext ? never : Token, factory: InjectableFunction<TContext, R, Tokens>, scope?: Scope): Injector<{ [K in keyof TContext]: TContext[K]} & { [T in Token]: R }>;
+     dispose(): Promise<void>;
+ }
+ //# sourceMappingURL=Injector.d.ts.map
+\ No newline at end of file
